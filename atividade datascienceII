@@ -1,0 +1,18 @@
+# Import modules
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plot
+import seaborn as sns
+
+#file load
+pacients = pd.read_csv('pacientes.csv')
+pacients.head()
+
+plot.hist(pacients['Idade do Segurado'], bins = 9,  align='right', color='purple', edgecolor='black')
+plot.xlabel('Idade do Segurado')
+plot.ylabel('Assegurados')
+plot.title('Distribuição de Pacientes por Idade')
+
+Conforme análise é possivel identificar que a faixa de idade dos segurados está entre 60 e 70 anos. A idade mais comuns para a aposentadoria pelo INSS, que é um benefício que tem como objetivo a proteção na idade em que a capacidade de trabalho se torna reduzida e o corpo não responde mais como na juventude e na fase adulta. Os requisitos para aposentadoria são a comprovação de 180 meses de trabalho, além da idade mínima de 65 anos, se homem, ou 60 anos, se mulher, exceto para o segurado especial – agricultor familiar, pescador artesanal, indígena – que possui a idade mínima reduzida em cinco anos.
+
+According to the analysis, it is possible to identify that the age range of the insured is between 60 and 70 years old. The most common age for retirement by the INSS, which is a benefit that aims to protect at the age when the work capacity becomes reduced and the body no longer responds as in youth and adulthood. The requirements for retirement are proof of 180 months of work, besides the minimum age of 65, if a man, or 60, if a woman, except for the specially insured - family farmers, artisan fishermen, indigenous people - who have the minimum age reduced by five years.
