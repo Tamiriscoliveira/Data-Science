@@ -1,2 +1,2 @@
 # Data-Science
-Repositorio destinadoa incluir os códigos feitos referente a faculdade de ciência de dados
+Repositorio destinado a incluir os códigos feitos referente a faculdade de ciência de dados
