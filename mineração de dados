@@ -1,0 +1,122 @@
+PROJETO DE APLICAÇÃO E MINERAÇÃO DE DADOS
+
+Utilizado um conjunto de dados de classificação binária simples no qual contém três atributos:
+idade
+interesse
+sucesso
+Podemos identificar o sucesso de várias pessoas ao aprenderem novos esportes.
+
+#bibliotecas utilizadas
+import numpy as np # for performing mathematical calculations behind ML algorithms
+import matplotlib.pyplot as plot # for visualization
+import pandas as pd # for handling and cleaning the dataset
+import seaborn as sns # for visualization
+import sklearn # for model evaluation and development
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import f1_score, classification_report, confusion_matrix, roc_curve, auc
+
+#conjunto de dados utilizado https://www.kaggle.com/sveneschlbeck/beginners-classification-dataset
+
+#Importando o dataset e visualizando as vinte primeiras linhas
+dados = pd.read_csv('classification.csv')
+dados
+
+
+#renomeando os atributos para português
+a_renomear = {
+    'age': 'idade',
+    'interest	': 'interesse',
+    'success': 'sucesso'
+}
+dados = dados.rename(columns=a_renomear)
+dados
+
+
+#Exibindo as característica física dos dados.A quantidade de linhas e colunas.
+print("O dado possui", dados.shape[0],"amostras e", dados.shape[1], "Atributos")
+
+#exibindo os dez primeiros atributos
+dados.head(10)
+
+#exibindo os dez ultimos atributos
+dados.tail(10)
+
+#Extraindo medidas estatisticas do conjunto de dados
+dados.describe()
+
+#Extraindo as medidas estatisticas invertendo a matriz de medidas
+dados.describe().transpose()
+
+
+#Exibindo a composição do conjunto de dados,a quantidade de registro e seu tipo de dado
+dados.info()
+
+
+Correlação
+#calculando a correlação dos dez primeiros atributos
+plot.figure(figsize=(8,8))
+medidas = dados.columns[1:11]
+medidas_correlatas = dados[medidas].corr()
+sns.heatmap(medidas_correlatas, cmap='coolwarm', annot=True, square=True)
+#A imagem exibe o mapa de calor da correlação dos vinte primeiros atributos, identifica aonde teve maior atividade na correlação.
+
+#Identificando a relação entre os atributos utilizando a matriz de correlação
+matriz_corr = dados.corr()
+matriz_corr
+
+#Distribuição de valores
+plot.figure(figsize=(6,4))
+sns.countplot(x=dados.sucesso, data=dados)
+plot.xlabel('Sucesso', fontsize=12)
+plot.ylabel('Total')
+
+#a distribuição dos valores com relação a idade e o sucesso do aprendizado
+sns.boxplot(x='sucesso', y='idade', data=dados)
+
+#Aqui identificamos o sucesso com relação ao interesses.
+sns.boxplot(x='sucesso', y='interest', data=dados)
+
+dados.head()
+
+PRÉ -PROCESSAMENTOS
+#Dimensionamento dos dados
+scaler = StandardScaler()
+dados[['idade', 'interest']] = scaler.fit_transform(dados[['idade', 'interest']])
+dados.head()
+
+#divisão os dados para o treino
+X = dados.drop('sucesso', axis=1)
+y = dados.sucesso
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33, random_state=42)
+X_train.shape, y_train.shape, X_test.shape, y_test.shape
+
+
+#modelando os dados
+params = {
+    'n_estimators': range(50, 250, 50),
+    'max_depth': range(1, 7, 2), 
+    'n_jobs': [-2], 
+    'min_samples_split': range(1, 10, 2)
+}
+
+
+RF = RandomForestClassifier()
+grid_clf = GridSearchCV(RF, param_grid=params, cv=5)
+
+grid_clf.fit(X_train, y_train)
+clf = grid_clf.best_estimator_
+clf
+clf.fit(X_train, y_train)
+
+Podemos identicar no modelo que o desempenho é satisfátorio com apenas um objeto foi detectado incorretamente
+
+pred = clf.predict(X_test)
+pred_proba = clf.predict_proba(X_test)
+
+plot.figure(figsize=(6, 5))
+sns.heatmap(confusion_matrix(y_test, pred), annot=True)
+print(classification_report(y_test, pred))
